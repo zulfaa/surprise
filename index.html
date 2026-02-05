@@ -4,115 +4,121 @@
 <meta charset="UTF-8">
 <title>Special Request 💖</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-
 <style>
-body {
-  margin: 0;
-  height: 100vh;
-  background: linear-gradient(135deg, #ff758c, #ff7eb3);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: 'Poppins', sans-serif;
-  overflow: hidden;
-  color: white;
-}
+  body {
+    margin: 0;
+    height: 100vh;
+    background: linear-gradient(135deg, #ff758c, #ff7eb3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Poppins', sans-serif;
+    overflow: hidden;
+    color: white;
+  }
 
-.card {
-  background: rgba(255,255,255,0.25);
-  padding: 60px 70px;
-  border-radius: 35px;
-  text-align: center;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.35);
-  max-width: 520px;
-  z-index: 2;
-}
+  .card {
+    background: rgba(255,255,255,0.25);
+    padding: 60px 70px;
+    border-radius: 35px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+    max-width: 520px;
+    z-index: 2;
+  }
 
-h1 {
-  font-size: 2.4rem;
-  margin-bottom: 35px;
-}
+  h1 {
+    font-size: 2.4rem;
+    margin-bottom: 25px;
+  }
 
-.buttons {
-  position: relative;
-  width: 100%;
-  height: 130px;
-}
+  p {
+    font-size: 1.2rem;
+    margin-bottom: 35px;
+  }
 
-button {
-  border: none;
-  padding: 18px 45px;
-  border-radius: 40px;
-  font-size: 1.3rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-}
+  .buttons {
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+  }
 
-.yes {
-  background: #ff4d6d;
-  color: white;
-  z-index: 2;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-}
+  button {
+    border: none;
+    padding: 18px 45px;
+    border-radius: 40px;
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
 
-.no {
-  background: white;
-  color: #ff4d6d;
-  z-index: 1;
-}
+  .primary {
+    background: #ff4d6d;
+    color: white;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  }
 
-/* Floating hearts */
-.heart {
-  position: absolute;
-  bottom: -30px;
-  font-size: 22px;
-  animation: float 6s linear infinite;
-  opacity: 0.9;
-}
+  .primary:hover {
+    transform: scale(1.1);
+  }
 
-@keyframes float {
-  from { transform: translateY(0); opacity: 1; }
-  to { transform: translateY(-110vh); opacity: 0; }
-}
+  .no {
+    background: white;
+    color: #ff4d6d;
+    position: relative;
+  }
 
-/* Popup */
-.popup {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.6);
-  display: none;
-  justify-content: center;
-  align-items: center;
-  z-index: 10;
-}
+  /* Floating hearts */
+  .heart {
+    position: absolute;
+    bottom: -30px;
+    font-size: 22px;
+    animation: float 6s linear infinite;
+    opacity: 0.9;
+  }
 
-.popup-content {
-  background: linear-gradient(135deg, #ff9a9e, #fad0c4);
-  color: #fff;
-  padding: 70px;
-  border-radius: 45px;
-  text-align: center;
-  animation: pop 0.5s cubic-bezier(.68,-0.55,.27,1.55);
-  max-width: 500px;
-  box-shadow: 0 25px 50px rgba(0,0,0,0.4);
-}
+  @keyframes float {
+    from { transform: translateY(0); opacity: 1; }
+    to { transform: translateY(-110vh); opacity: 0; }
+  }
 
-@keyframes pop {
-  0% { transform: scale(0); }
-  80% { transform: scale(1.1); }
-  100% { transform: scale(1); }
-}
+  /* Popup */
+  .popup {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+  }
 
-.popup-content p {
-  font-size: 1.4rem;
-  line-height: 1.6;
-}
+  .popup-content {
+    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+    color: #fff;
+    padding: 60px 70px;
+    border-radius: 40px;
+    text-align: center;
+    animation: pop 0.6s ease;
+    max-width: 480px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  }
+
+  .popup-content h2 {
+    font-size: 2.2rem;
+    margin-bottom: 20px;
+  }
+
+  .popup-content p {
+    font-size: 1.3rem;
+    line-height: 1.6;
+  }
+
+  @keyframes pop {
+    from { transform: scale(0.3); }
+    to { transform: scale(1); }
+  }
 </style>
 </head>
 
@@ -122,98 +128,66 @@ button {
 <div class="card" id="screen1">
   <h1>💌 New Request</h1>
   <p>You have a request from<br><strong>Mrs. Afraz</strong></p>
-  <button class="yes" onclick="showValentine()">View Request 💖</button>
+  <button class="primary" onclick="showValentine()">View Request 💖</button>
 </div>
 
 <!-- SCREEN 2 -->
 <div class="card" id="screen2" style="display:none;">
   <h1>
-    Will you be mine,<br>
-    <span>❤️ Mr Afraz ❤️</span>
+    Will you be my Valentine,<br>
+    <span>❤️ Mr Afraz ❤️</span>?
   </h1>
 
   <div class="buttons">
-    <button class="yes" id="yesBtn" onclick="handleYes()">YES 💖</button>
-    <button class="no" id="noBtn" onclick="handleNo()">NO 🙃</button>
+    <button class="primary" onclick="showPopup()">YES 💖</button>
+    <button class="no" id="noBtn">NO 😈</button>
   </div>
 </div>
 
 <!-- POPUP -->
 <div class="popup" id="popup">
   <div class="popup-content">
+    <h2>Too late 😌💘</h2>
     <p>
-      You were always mine 🤍<br><br>
-      Today, tomorrow,<br>
-      and every day after 💕<br><br>
-      — Mrs Afraz 😘
+      You already are my Valentine 💍<br><br>
+      I choose you — today, tomorrow, always 💕
     </p>
   </div>
 </div>
 
 <script>
-function showValentine() {
-  screen1.style.display = 'none';
-  screen2.style.display = 'block';
-}
-
-const noMessages = [
-  "Are you sure? 🥺",
-  "Think again 😏",
-  "This hurts 💔",
-  "Illegal choice 😈",
-  "Try harder 🙃",
-  "Still no? 😌",
-  "You know better 😘"
-];
-
-let noClicks = 0;
-let yesClicks = 0;
-let yesScale = 1;
-
-function handleNo() {
-  const noBtn = document.getElementById('noBtn');
-  const box = document.querySelector('.buttons');
-
-  noBtn.innerText = noMessages[noClicks % noMessages.length];
-  noClicks++;
-
-  const maxX = box.clientWidth - noBtn.offsetWidth;
-  const maxY = box.clientHeight - noBtn.offsetHeight;
-
-  noBtn.style.left = Math.random() * maxX + 'px';
-  noBtn.style.top = Math.random() * maxY + 'px';
-  noBtn.style.transform = 'none';
-
-  // YES grows every NO click
-  yesScale += 0.25;
-  yesBtn.style.transform = `translate(-50%, -50%) scale(${yesScale})`;
-}
-
-function handleYes() {
-  yesClicks++;
-  yesScale += 0.15;
-  yesBtn.style.transform = `translate(-50%, -50%) scale(${yesScale})`;
-
-  if (yesClicks >= 3) {
-    showPopup();
+  // Switch screens
+  function showValentine() {
+    document.getElementById('screen1').style.display = 'none';
+    document.getElementById('screen2').style.display = 'block';
   }
-}
 
-function showPopup() {
-  popup.style.display = 'flex';
-}
+  // Runaway NO button
+  const noBtn = document.getElementById('noBtn');
+  noBtn.addEventListener('mouseover', () => {
+    noBtn.style.position = 'absolute';
+    noBtn.style.left = Math.random() * 80 + '%';
+    noBtn.style.top = Math.random() * 80 + '%';
+  });
 
-function createHeart() {
-  const heart = document.createElement('div');
-  heart.className = 'heart';
-  heart.innerHTML = '❤️';
-  heart.style.left = Math.random() * 100 + 'vw';
-  heart.style.fontSize = Math.random() * 20 + 18 + 'px';
-  document.body.appendChild(heart);
-  setTimeout(() => heart.remove(), 6000);
-}
+  // Show popup
+  function showPopup() {
+    document.getElementById('popup').style.display = 'flex';
+  }
 
-setInterval(createHeart, 300);
+  // Floating hearts
+  function createHeart() {
+    const heart = document.createElement('div');
+    heart.className = 'heart';
+    heart.innerHTML = '❤️';
+    heart.style.left = Math.random() * 100 + 'vw';
+    heart.style.fontSize = Math.random() * 20 + 18 + 'px';
+    document.body.appendChild(heart);
+
+    setTimeout(() => heart.remove(), 6000);
+  }
+
+  setInterval(createHeart, 300);
 </script>
 
 </body>
