@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>For Mr Afraz 💘</title>
+  <title>For Mr Afraz 💖</title>
+
   <style>
     * {
       box-sizing: border-box;
@@ -21,54 +22,59 @@
 
     .screen {
       background: white;
-      padding: 40px;
-      border-radius: 20px;
+      padding: 45px;
+      border-radius: 22px;
       text-align: center;
       box-shadow: 0 20px 40px rgba(0,0,0,0.2);
       max-width: 90%;
+      width: 420px;
+      position: relative;
     }
 
     h1 {
-      font-size: 36px;
-      margin-bottom: 20px;
+      font-size: 34px;
       color: #e60073;
+      margin-bottom: 15px;
     }
 
     p {
       font-size: 20px;
+      margin-bottom: 10px;
     }
 
     button {
-      padding: 15px 30px;
-      font-size: 20px;
-      border-radius: 12px;
       border: none;
+      border-radius: 14px;
       cursor: pointer;
       transition: all 0.3s ease;
+      font-size: 20px;
     }
 
     .primary {
       background: #ff4081;
       color: white;
+      padding: 16px 36px;
     }
 
     .secondary {
-      background: #ccc;
+      background: #ddd;
+      color: #444;
+      padding: 16px 36px;
     }
 
     .buttons {
       display: flex;
-      gap: 20px;
       justify-content: center;
-      margin-top: 30px;
-      position: relative;
+      gap: 18px;
+      margin-top: 28px;
+      flex-wrap: wrap;
     }
 
-    /* Hearts */
+    /* Floating hearts */
     .heart {
       position: absolute;
       bottom: -20px;
-      font-size: 24px;
+      font-size: 22px;
       animation: float 6s linear infinite;
       opacity: 0.7;
     }
@@ -96,8 +102,9 @@
       border-radius: 30px;
       text-align: center;
       color: white;
-      font-size: 28px;
+      font-size: 26px;
       box-shadow: 0 0 50px #ff69b4;
+      line-height: 1.4;
     }
 
     .confetti {
@@ -109,6 +116,7 @@
     }
   </style>
 </head>
+
 <body>
 
   <!-- Screen 1 -->
@@ -121,7 +129,7 @@
   <!-- Screen 2 -->
   <div class="screen" id="screen2" style="display:none;">
     <h1>Mr Afraz 💖</h1>
-    <p>Will you be my Valentine?</p>
+    <p>Will you be mine?</p>
 
     <div class="buttons">
       <button id="yesBtn" class="primary" onclick="sayYes()">YES 💘</button>
@@ -135,67 +143,78 @@
   <div class="popup" id="popup">
     <div class="popup-content">
       💖 YAYYYYY 💖<br><br>
-      Mr Afraz,<br>
-      You’re officially, permanently,<br>
-      non-refundable Valentine 💕<br><br>
-      Love,<br>
+
+      Mr Afraz,<br><br>
+
+      You’re always mine.<br>
+      Today, tomorrow,<br>
+      and every day after that 🤍<br><br>
+
+      This was never really a question,<br>
+      just a little reminder<br>
+      of us ✨<br><br>
+
+      Always yours,<br>
       Mrs Afraz 😘
     </div>
   </div>
 
-<script>
-  const noMessages = [
-    "Are you sure? 😐",
-    "Really sure?? 🤨",
-    "Think again 🧐",
-    "This button is dangerous 😭",
-    "Your wife is watching 👀",
-    "Wrong answer 😈",
-    "Last chance 😶",
-    "Okay now you’re just lying",
-    "NO is disabled emotionally 💔"
-  ];
+  <script>
+    const noMessages = [
+      "Are you sure? 😐",
+      "Think again 🤨",
+      "Wrong choice 😅",
+      "Nice try 😏",
+      "That button is lying",
+      "You know the answer",
+      "Still no? really?",
+      "This is getting suspicious",
+      "Okay enough drama"
+    ];
 
-  let noCount = 0;
-  let yesScale = 1;
+    let noCount = 0;
+    let yesPadding = 36;
+    let yesFont = 20;
 
-  function openValentine() {
-    document.getElementById("screen1").style.display = "none";
-    document.getElementById("screen2").style.display = "block";
-  }
-
-  function sayNo() {
-    const noBtn = document.getElementById("noBtn");
-    const yesBtn = document.getElementById("yesBtn");
-
-    noBtn.textContent = noMessages[noCount % noMessages.length];
-    noCount++;
-
-    yesScale += 0.3;
-    yesBtn.style.transform = `scale(${yesScale})`;
-    yesBtn.style.zIndex = 5;
-
-    if (yesScale > 2.5) {
-      noBtn.style.display = "none";
+    function openValentine() {
+      document.getElementById("screen1").style.display = "none";
+      document.getElementById("screen2").style.display = "block";
     }
-  }
 
-  function sayYes() {
-    document.getElementById("confetti").style.display = "block";
-    document.getElementById("popup").style.display = "flex";
-  }
+    function sayNo() {
+      const noBtn = document.getElementById("noBtn");
+      const yesBtn = document.getElementById("yesBtn");
 
-  // Floating hearts
-  setInterval(() => {
-    const heart = document.createElement("div");
-    heart.className = "heart";
-    heart.innerHTML = "❤️";
-    heart.style.left = Math.random() * 100 + "vw";
-    heart.style.animationDuration = (Math.random() * 3 + 4) + "s";
-    document.body.appendChild(heart);
-    setTimeout(() => heart.remove(), 7000);
-  }, 300);
-</script>
+      noBtn.textContent = noMessages[noCount % noMessages.length];
+      noCount++;
+
+      yesPadding += 6;
+      yesFont += 2;
+
+      yesBtn.style.padding = `16px ${yesPadding}px`;
+      yesBtn.style.fontSize = yesFont + "px";
+
+      if (yesPadding > 120) {
+        noBtn.style.display = "none";
+      }
+    }
+
+    function sayYes() {
+      document.getElementById("confetti").style.display = "block";
+      document.getElementById("popup").style.display = "flex";
+    }
+
+    // Floating hearts
+    setInterval(() => {
+      const heart = document.createElement("div");
+      heart.className = "heart";
+      heart.innerHTML = "❤️";
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.animationDuration = (Math.random() * 3 + 4) + "s";
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 7000);
+    }, 300);
+  </script>
 
 </body>
 </html>
