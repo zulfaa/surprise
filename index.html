@@ -26,6 +26,7 @@
     box-shadow: 0 20px 40px rgba(0,0,0,0.35);
     max-width: 520px;
     z-index: 2;
+    transform: translateZ(0);
   }
 
   h1 {
@@ -51,6 +52,7 @@
     font-size: 1.3rem;
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
+    will-change: transform;
   }
 
   .primary {
@@ -66,7 +68,8 @@
   .no {
     background: white;
     color: #ff4d6d;
-    position: relative;
+    position: absolute;
+    transition: transform 0.3s ease;
   }
 
   /* Floating hearts */
@@ -76,6 +79,7 @@
     font-size: 22px;
     animation: float 6s linear infinite;
     opacity: 0.9;
+    will-change: transform, opacity;
   }
 
   @keyframes float {
@@ -89,6 +93,7 @@
     inset: 0;
     background: rgba(0,0,0,0.6);
     display: none;
+    visibility: hidden;
     justify-content: center;
     align-items: center;
     z-index: 10;
@@ -103,6 +108,7 @@
     animation: pop 0.6s ease;
     max-width: 480px;
     box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    transform: translateZ(0);
   }
 
   .popup-content h2 {
@@ -158,21 +164,43 @@
 <script>
   // Switch screens
   function showValentine() {
-    document.getElementById('screen1').style.display = 'none';
-    document.getElementById('screen2').style.display = 'block';
+    requestAnimationFrame(() => {
+      document.getElementById('screen1').style.display = 'none';
+      document.getElementById('screen2').style.display = 'block';
+    });
   }
 
-  // Runaway NO button
+  // Runaway NO button with changing text
   const noBtn = document.getElementById('noBtn');
+  const noTexts = [
+    'NO 😈',
+    'Really? 🤔',
+    'Are you sure? 😢',
+    'Think again! 💔',
+    'Please? 🥺',
+    'One more chance? 💕',
+    'Final answer? 😭',
+    'You break my heart 💔'
+  ];
+  let noClickCount = 0;
+
   noBtn.addEventListener('mouseover', () => {
-    noBtn.style.position = 'absolute';
-    noBtn.style.left = Math.random() * 80 + '%';
-    noBtn.style.top = Math.random() * 80 + '%';
+    const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+    const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+    noBtn.style.transform = `translate(${x}px, ${y}px)`;
+    
+    // Change text on each hover
+    if (noClickCount < noTexts.length - 1) {
+      noClickCount++;
+      noBtn.textContent = noTexts[noClickCount];
+    }
   });
 
   // Show popup
   function showPopup() {
-    document.getElementById('popup').style.display = 'flex';
+    const popup = document.getElementById('popup');
+    popup.style.display = 'flex';
+    popup.style.visibility = 'visible';
   }
 
   // Floating hearts
