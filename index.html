@@ -37,9 +37,9 @@
     display: flex;
     gap: 30px;
     justify-content: center;
-    flex-wrap: wrap;
+    align-items: center;
     position: relative;
-    height: 120px;
+    height: 140px;
   }
 
   button {
@@ -49,6 +49,7 @@
     font-size: 1.3rem;
     cursor: pointer;
     transition: all 0.3s ease;
+    position: relative;
   }
 
   .yes {
@@ -57,37 +58,15 @@
     box-shadow: 0 5px 15px rgba(0,0,0,0.3);
     z-index: 2;
   }
-  .no {
-  background: white;
-  color: #ff4d6d;
-  position: absolute;
-  z-index: 1;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
+
+  /* START as normal button */
   .no {
     background: white;
     color: #ff4d6d;
-    position: absolute;
     z-index: 1;
   }
 
-  /* Floating hearts */
-  .heart {
-    position: absolute;
-    bottom: -30px;
-    font-size: 22px;
-    animation: float 6s linear infinite;
-    opacity: 0.9;
-  }
-
-  @keyframes float {
-    from { transform: translateY(0); opacity: 1; }
-    to { transform: translateY(-110vh); opacity: 0; }
-  }
-
-  /* Popup overlay */
+  /* Popup */
   .popup {
     position: fixed;
     inset: 0;
@@ -98,31 +77,20 @@
     z-index: 10;
   }
 
-  /* Popup content with GIF background */
   .popup-content {
-    background:
-      linear-gradient(rgba(255,154,158,0.85), rgba(250,208,196,0.85)),
-      url("https://media.giphy.com/media/26BRv0ThflsHCqDrG/giphy.gif");
-    background-size: cover;
-    background-position: center;
+    background: linear-gradient(rgba(255,154,158,0.95), rgba(250,208,196,0.95));
     color: #fff;
     padding: 70px;
     border-radius: 45px;
     text-align: center;
     animation: pop 0.5s cubic-bezier(.68,-0.55,.27,1.55);
     max-width: 500px;
-    box-shadow: 0 25px 50px rgba(0,0,0,0.4);
   }
 
   @keyframes pop {
     0% { transform: scale(0); }
     80% { transform: scale(1.1); }
     100% { transform: scale(1); }
-  }
-
-  .popup-content p {
-    font-size: 1.4rem;
-    line-height: 1.6;
   }
 </style>
 </head>
@@ -140,11 +108,11 @@
 <div class="card" id="screen2" style="display:none;">
   <h1>
     Will you be my Valentine,<br>
-    <span>❤️ Mr Afraz ❤️</span>
+    ❤️ Mr Afraz ❤️
   </h1>
 
-  <div class="buttons">
-    <button class="yes" id="yesBtn" onclick="showPopup()">YES 💖</button>
+  <div class="buttons" id="btnBox">
+    <button class="yes" id="yesBtn" onclick="growYes()">YES 💖</button>
     <button class="no" id="noBtn" onclick="handleNo()">NO 🙃</button>
   </div>
 </div>
@@ -169,46 +137,39 @@
     "Are you sure? 🥺",
     "Think again 😏",
     "This hurts 💔",
-    "Last chance 😈",
-    "Okay okay 😌"
+    "Really?? 😭",
+    "You can't escape 😈"
   ];
 
   let noClicks = 0;
+  let yesScale = 1;
 
   function handleNo() {
     const noBtn = document.getElementById('noBtn');
-    const parent = noBtn.parentElement;
+    const box = document.getElementById('btnBox');
 
-    // Change text
     noBtn.innerText = noMessages[noClicks % noMessages.length];
     noClicks++;
 
-    // Random movement inside buttons container
-    const maxX = parent.clientWidth - noBtn.offsetWidth;
-    const maxY = parent.clientHeight - noBtn.offsetHeight;
+    // Switch to absolute ONLY after first click
+    noBtn.style.position = 'absolute';
 
-    const randomX = Math.random() * maxX;
-    const randomY = Math.random() * maxY;
+    const maxX = box.clientWidth - noBtn.offsetWidth;
+    const maxY = box.clientHeight - noBtn.offsetHeight;
 
-    noBtn.style.left = randomX + 'px';
-    noBtn.style.top = randomY + 'px';
+    noBtn.style.left = Math.random() * maxX + 'px';
+    noBtn.style.top  = Math.random() * maxY + 'px';
   }
 
-  function showPopup() {
-    document.getElementById('popup').style.display = 'flex';
-  }
+  function growYes() {
+    const yesBtn = document.getElementById('yesBtn');
+    yesScale += 0.35;
+    yesBtn.style.transform = `scale(${yesScale})`;
 
-  function createHeart() {
-    const heart = document.createElement('div');
-    heart.className = 'heart';
-    heart.innerHTML = '❤️';
-    heart.style.left = Math.random() * 100 + 'vw';
-    heart.style.fontSize = Math.random() * 20 + 18 + 'px';
-    document.body.appendChild(heart);
-    setTimeout(() => heart.remove(), 6000);
+    if (yesScale > 2.2) {
+      document.getElementById('popup').style.display = 'flex';
+    }
   }
-
-  setInterval(createHeart, 300);
 </script>
 
 </body>
