@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
   <title>Special Request 💖</title>
 
   <!-- Responsive + font + theme color -->
@@ -15,7 +15,6 @@
       --pink-2: #ff7eb3;
       --accent: #ff4d6d;
       --card-bg: rgba(255,255,255,0.14);
-      --white-faint: rgba(255,255,255,0.25);
     }
 
     html,body{
@@ -28,7 +27,6 @@
       background: linear-gradient(135deg, var(--pink-1), var(--pink-2));
     }
 
-    /* Layout */
     body{
       display:flex;
       align-items:center;
@@ -48,7 +46,7 @@
       max-width: 520px;
       width:100%;
       position:relative;
-      z-index: 2; /* above hearts */
+      z-index: 2;
       transform: translateZ(0);
     }
 
@@ -97,6 +95,7 @@
       background: #fff;
       color: var(--accent);
       position:relative;
+      min-width: 9ch;
     }
 
     .no:hover{ transform: translateY(-3px); }
@@ -178,7 +177,14 @@
       cursor:pointer;
     }
 
-    /* Backdrop filter fallback and smaller devices tweaks */
+    /* minimal accepted screen */
+    .accepted {
+      display:none;
+      max-width:520px;
+      width:100%;
+      text-align:center;
+    }
+
     @supports not ((-webkit-backdrop-filter: blur(10px)) or (backdrop-filter: blur(10px))) {
       .card, .popup-content { background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04)); }
     }
@@ -221,6 +227,12 @@
     </div>
   </div>
 
+  <!-- minimal ACCEPTED screen (shown after popup closes when accepted) -->
+  <div class="card accepted" id="acceptedScreen" aria-hidden="true">
+    <h1>We're together 💍</h1>
+    <p>You're always my Valentine — today, tomorrow, and forever 💖</p>
+  </div>
+
   <!-- POPUP -->
   <div class="popup" id="popup" role="dialog" aria-modal="true" aria-labelledby="popupTitle" tabindex="-1">
     <div class="popup-content" role="document">
@@ -240,6 +252,7 @@
     // Elements
     const screen1 = document.getElementById('screen1');
     const screen2 = document.getElementById('screen2');
+    const acceptedScreen = document.getElementById('acceptedScreen');
     const viewRequestBtn = document.getElementById('viewRequestBtn');
     const yesBtn = document.getElementById('yesBtn');
     const noBtn = document.getElementById('noBtn');
@@ -247,9 +260,11 @@
     const popupClose = document.getElementById('popupClose');
     const heartsContainer = document.getElementById('hearts');
 
-    // Local state
-    const storageKey = 'valentineAccepted';
-    let noClickCount = 0;
+    // Local (in-memory) state only — refresh resets everything
+    let acceptedInMemory = false;
+    let noClickIndex = 0;
+
+    // ~50 "no" messages (looping)
     const noTexts = [
       'NO 😈',
       'Really? 🤔',
@@ -258,7 +273,50 @@
       'Please? 🥺',
       'One more chance? 💕',
       'Final answer? 😭',
-      'You break my heart 💔'
+      'You break my heart 💔',
+      "Not today 😬",
+      "Stop it 😒",
+      "Nope. Nope. Nope.",
+      "Come on... 🙄",
+      "I can't... 😞",
+      "This is tragic 😢",
+      "The answer is no.",
+      "Hard pass.",
+      "Please don't.",
+      "Ugh, seriously?",
+      "Not in a million years.",
+      "Try again later.",
+      "Maybe never.",
+      "I'm devastated.",
+      "Why would I?",
+      "That's a hard no.",
+      "Sad face 😭",
+      "My feelings — crushed.",
+      "Cold heart 💔",
+      "No way José.",
+      "Absolutely not.",
+      "Negative.",
+      "Declined.",
+      "Access denied.",
+      "Not happening.",
+      "I refuse.",
+      "No thanks.",
+      "Think twice.",
+      "Still no.",
+      "No. Stop.",
+      "Do you even listen?",
+      "Oh, come on...",
+      "Why though?",
+      "This hurts.",
+      "My answer stays no.",
+      "Please reconsider.",
+      "This is awkward.",
+      "My heart says no.",
+      "Can't pretend to be okay with that.",
+      "I'm allergic to yes.",
+      "Sadder than ever.",
+      "Echo: no.",
+      "Cry me a river."
     ];
 
     // Hearts / decorations
@@ -267,21 +325,15 @@
       const heart = document.createElement('div');
       heart.className = 'heart';
       heart.textContent = '❤️';
-      // random horizontal position relative to viewport
       const left = Math.random() * 100;
       heart.style.left = left + 'vw';
-      // random size
       const size = 14 + Math.random() * 28;
       heart.style.fontSize = size + 'px';
-      // random animation duration
       const duration = 4 + Math.random() * 5;
       heart.style.animationDuration = duration + 's';
       heart.style.opacity = 0.9 - Math.random() * 0.5;
       heartsContainer.appendChild(heart);
-      // remove after animation
-      setTimeout(() => {
-        heart.remove();
-      }, duration * 1000);
+      setTimeout(() => heart.remove(), duration * 1000);
     }
 
     function startHearts(){
@@ -290,7 +342,6 @@
     }
     function stopHearts(){
       if (heartInterval) { clearInterval(heartInterval); heartInterval = null; }
-      // remove remaining hearts
       heartsContainer.querySelectorAll('.heart').forEach(h => h.remove());
     }
 
@@ -300,9 +351,7 @@
       screen1.setAttribute('aria-hidden', 'true');
       screen2.style.display = 'block';
       screen2.setAttribute('aria-hidden', 'false');
-      // ensure hearts running
       startHearts();
-      // move focus to first button for keyboard users
       requestAnimationFrame(()=> yesBtn.focus());
     }
 
@@ -311,22 +360,15 @@
       popup.style.display = 'flex';
       popup.style.visibility = 'visible';
       popup.setAttribute('aria-hidden', 'false');
-      // stop hearts when celebrating
       stopHearts();
 
-      // confetti burst (if available)
       if (window.confetti && typeof window.confetti === 'function') {
-        confetti({
-          particleCount: 120,
-          spread: 80,
-          origin: { y: 0.35 }
-        });
+        confetti({ particleCount: 120, spread: 80, origin: { y: 0.35 } });
       }
 
-      // set accepted in localStorage
-      try { localStorage.setItem(storageKey, 'true'); } catch(e){/*ignore*/}
+      // mark accepted only in-memory (no persistence)
+      acceptedInMemory = true;
 
-      // focus popup for accessibility
       popup.focus();
     }
 
@@ -334,19 +376,27 @@
       popup.style.display = 'none';
       popup.style.visibility = 'hidden';
       popup.setAttribute('aria-hidden', 'true');
-      // restore focus to YES button if visible
-      if (screen2.style.display === 'block') yesBtn.focus();
+
+      if (acceptedInMemory) {
+        // show accepted message (in-memory only)
+        screen1.style.display = 'none';
+        screen1.setAttribute('aria-hidden', 'true');
+        screen2.style.display = 'none';
+        screen2.setAttribute('aria-hidden', 'true');
+        acceptedScreen.style.display = 'block';
+        acceptedScreen.setAttribute('aria-hidden', 'false');
+      } else {
+        if (screen2.style.display === 'block') yesBtn.focus();
+      }
     }
 
-    // NO button: don't move, only change text
-    noBtn.addEventListener('pointerenter', () => {
-      if (noClickCount < noTexts.length - 1) {
-        noClickCount++;
-        noBtn.textContent = noTexts[noClickCount];
-      }
+    // NO button: change text on click, loop through array
+    noBtn.addEventListener('click', () => {
+      noClickIndex = (noClickIndex + 1) % noTexts.length;
+      noBtn.textContent = noTexts[noClickIndex];
     });
 
-    // Allow ESC to close popup, and click outside to close
+    // ESC to close popup & click outside to close
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && popup.style.display === 'flex') {
         closePopup();
@@ -355,53 +405,35 @@
 
     popup.addEventListener('click', (e) => {
       const content = popup.querySelector('.popup-content');
-      if (!content.contains(e.target)) {
-        closePopup();
-      }
+      if (!content.contains(e.target)) closePopup();
     });
 
     popupClose.addEventListener('click', closePopup);
 
     // Buttons
     viewRequestBtn.addEventListener('click', showValentine);
-    yesBtn.addEventListener('click', () => {
-      showPopup();
-    });
+    yesBtn.addEventListener('click', showPopup);
 
-    // On load, if previously accepted show popup immediately
+    // On load: always start fresh (no persistence) so refresh resets everything
     function init(){
-      const accepted = (function(){
-        try { return localStorage.getItem(storageKey) === 'true'; } catch(e){ return false; }
-      })();
-
-      if (accepted) {
-        // hide initial screens and show popup to celebrate
-        screen1.style.display = 'none';
-        screen1.setAttribute('aria-hidden', 'true');
-        screen2.style.display = 'none';
-        screen2.setAttribute('aria-hidden', 'true');
-        // show popup (and stop hearts)
-        showPopup();
-      } else {
-        screen1.style.display = 'block';
-        screen1.setAttribute('aria-hidden', 'false');
-        screen2.style.display = 'none';
-        screen2.setAttribute('aria-hidden', 'true');
-        startHearts();
-      }
+      screen1.style.display = 'block';
+      screen1.setAttribute('aria-hidden', 'false');
+      screen2.style.display = 'none';
+      screen2.setAttribute('aria-hidden', 'true');
+      acceptedScreen.style.display = 'none';
+      acceptedScreen.setAttribute('aria-hidden', 'true');
+      acceptedInMemory = false;
+      noClickIndex = 0;
+      noBtn.textContent = noTexts[0];
+      startHearts();
     }
 
-    // Kickoff
     init();
 
-    // Make sure hearts pause when page is hidden to be performant
+    // Pause hearts on visibilitychange
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) stopHearts();
-      else {
-        try {
-          if (localStorage.getItem(storageKey) !== 'true') startHearts();
-        } catch(e){}
-      }
+      else startHearts();
     });
   </script>
 </body>
